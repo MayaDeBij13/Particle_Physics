@@ -39,16 +39,12 @@ print(f"De tweede piek heeft {max_A_2} counts en een pulseheight van {pulseheigh
 Energy = [511, 1275]
 Ph = [pulseheight_A1, pulseheight_A2]
 
-# Print de lineaire functie
 
-# Maak de fitted lijn
-# y_fit = [a * xi for xi in Ph]
 
 def fit_function(Energy, a, b):
-    Ph = (Energy - b) / a
+    Ph = a * Energy + b
     return Ph
 
-# print(curve_fit(fit_function, Energy, Ph))
 
 # Fit the curve
 params, covariance = curve_fit(fit_function, Energy, Ph)
@@ -58,7 +54,9 @@ a, b = params
 print(f"Fitted parameters: a = {a}, b = {b}")
 
 # Generate fitted values for plotting
-Ph_fitted = fit_function(Energy, a, b)
+Ph_fitted = []
+for item in Energy:
+    Ph_fitted.append(fit_function(item, a, b))
 
 plt.plot(L_pulseheight, list_count_A)
 plt.show()
@@ -72,15 +70,28 @@ plt.legend()
 plt.show()
 
 
-# fitfitfit = models.Model(fit_function, name="factor" )
+cesium_counts = []
+cesium_pulseheight = []
+with open('cal_cs_1.csv', mode='r') as cs_spectrum:
+    csv_reader = csv.reader(cs_spectrum)
 
-# fitresult = fitfitfit.fit(Energy = Energy, Ph = Ph, a = 1)
-# fitresult.plot()
+    # Skip the first line (header)
+    next(csv_reader)  # This skips the first row
 
-# # Plot de originele data en de lineaire fit
-# plt.scatter(Ph, Energy, label="Data", color="blue")  # De originele data
-# plt.plot(Ph, y_fit, label=f"Fitted line: Energy = {a:.2f}Ph", color="red")  # De fitted lijn
-# plt.xlabel("Ph")
-# plt.ylabel("Energy")
-# plt.legend()
-# plt.show()
+    # Iterate through the rows
+    for row in csv_reader:
+        pulseheigt, count_A, count_B = row
+
+        cesium_counts.append(float(count_A))
+        cesium_pulseheight.append(float(pulseheigt))
+        # print(count_A)
+
+cs_energies = []
+
+for item in cesium_pulseheight:
+    eng = (item - b) / a
+    cs_energies.append(eng)
+
+plt.plot(cs_energies, cesium_counts)
+plt.xlim(0, 2000)
+plt.show()
