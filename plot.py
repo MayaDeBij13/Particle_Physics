@@ -55,7 +55,7 @@ with open('book3_600s.csv', mode='r') as spectrum:
         L_pulseheight3.append(float(pulseheigt))
         # print(count_A)
 
-with open('book4_600s.csv', mode='r') as spectrum:
+with open('cal_Ge_Cs_2.csv', mode='r') as spectrum:
     csv_reader = csv.reader(spectrum)
 
     # Skip the first line (header)
